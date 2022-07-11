@@ -133,27 +133,33 @@ flipCards.forEach((flipCard) => {
         flipCard.classList.remove('is-flipped');
     })
 })
-
+let a;
 if(location.hash == '#actions-a'){
     locationActionsA();
+    a=1;
 }
 if(location.hash == "#home"){
     locationHome();
 }
 if(location.hash == "#animals-a"){
     locationAnimalsA();
+    a=3;
 }
 if(location.hash == "#emotions"){
     emotions();
+    a=6;
 }
 if(location.hash == "#clothes"){
     clothes();
+    a=5;
 }
 if(location.hash == "#animals-b"){
     locationAnimalsB();
+    a=4;
 }
 if(location.hash == "#actions-b"){
     locationActionsB();
+    a=2;
 }
 /*if(location.hash == "#actions-b"){
     locationActionsB();
@@ -161,9 +167,11 @@ if(location.hash == "#actions-b"){
 }*/
 if(location.hash == "#colors"){
     locationColors();
+    a=7;
 }
 if(location.hash == "#fruit"){
     fruit();
+    a=8;
 }
 function setCards(num){
     for(let i=0; i<cards[num].length; i++){
@@ -194,35 +202,7 @@ function setAudio(num){
     
 }
 
-//toggle button
-toggleButton.addEventListener('click', function(){
-    if(location.hash == '#home'){
-        alert('Please Choose A Category')
-    }else{
-    toggle.classList.toggle('active-toggle');
-    document.querySelector('.cards-container2').classList.toggle('change-color');
-    }
-    if(toggle.classList.contains('active-toggle')){
-        document.querySelector('.text').innerText = "Play"
-        document.querySelector('.text').style.color = 'darkred';
-        innerCards.forEach((innerCard)=>{
-            innerCard.classList.toggle('playMode');
-           })
-        cardImages.forEach((cardImage)=>{
-            cardImage.classList.toggle('playMode');
-        })
-        playTrain(5);
-    }else {
-        document.querySelector('.text').innerText = "Train";
-        document.querySelector('.text').style.color = "darkblue";
-        innerCards.forEach((innerCard)=>{
-            innerCard.classList.remove('playMode');
-       })
-       cardImages.forEach((cardImage)=>{
-        cardImage.classList.remove('playMode');
-    })
-    }
-})
+
 //create table 
 const tableBody = document.getElementById('table-body');
 
@@ -267,4 +247,32 @@ function playTrain(num){
 function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
 }
-playTrain(5);
+//toggle button
+toggleButton.addEventListener('click', function(){
+    if(location.hash == '#home'){
+        alert('Please Choose A Category')
+    }else{
+    toggle.classList.toggle('active-toggle');
+    document.querySelector('.cards-container2').classList.toggle('change-color');
+    }
+    if(toggle.classList.contains('active-toggle')){
+        document.querySelector('.text').innerText = "Play"
+        document.querySelector('.text').style.color = 'darkred';
+        innerCards.forEach((innerCard)=>{
+            innerCard.classList.toggle('playMode');
+           })
+        cardImages.forEach((cardImage)=>{
+            cardImage.classList.toggle('playMode');
+        })
+        playTrain(a);
+    }else {
+        document.querySelector('.text').innerText = "Train";
+        document.querySelector('.text').style.color = "darkblue";
+        innerCards.forEach((innerCard)=>{
+            innerCard.classList.remove('playMode');
+       })
+       cardImages.forEach((cardImage)=>{
+        cardImage.classList.remove('playMode');
+    })
+    }
+})
