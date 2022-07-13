@@ -123,7 +123,13 @@ checkLocation();
 //makind cards flip onclick
 flipCards.forEach((flipCard)=>{
     flipCard.addEventListener('click', function (){
+        if(toggle.classList.contains('active-toggle')==false){
         flipCard.classList.add('is-flipped');
+        }
+        /*else{
+            elementClicked = true;
+            console.log(flipCard);
+        }*/
     })
 })
 
@@ -228,20 +234,90 @@ function makeTable(num){
         `
     }
 }
+let elementClicked = false;
+const winImage = document.createElement('img');
+winImage.classList.add('winImage');
+winImage.alt = 'win image';
+winImage.src = 'data/img/win.jpg';
 
-function playTrain(num){
-    let elementClicked = false;
+const loseImage = document.createElement('img');
+loseImage.classList.add('winImage');
+loseImage.alt = 'lose image';
+loseImage.src = 'data/img/lose.webp';
+
+const starContainer = document.createElement('div');
+starContainer.classList.add('starContainer');
+
+let whiteStar = document.createElement('img');
+whiteStar.classList.add('white-star');
+whiteStar.src = 'data/img/star.svg'
+
+let redStar = document.createElement('img');
+redStar.classList.add('red-star');
+redStar.src = 'data/img/redstar.png'
+function playTrain(){
     let arr = [];
     for(let i=0; i<8; i++){
-        arr.push(cards[num][i]['audioSrc'])
+        cards[a][i]['id']=i;
+        arr.push(cards[a][i])
     }
     shuffle(arr);
-    let audio1 = new Audio(`${arr[arr.length-1]}`);
+    console.log(arr)
+    let n = 1;
+    let lastElem = arr[arr.length-n]; 
+    let audio1 = new Audio(lastElem['audioSrc']);
     audio1.play();
-    
-    flipCards[num].addEventListener('click', function(){
-        elementClicked = true;
-        console.log(flipCards[num]);
+    startBtn.innerText = '';
+    startBtn.innerHTML = `
+    <img src='data/img/repeat.png' class='repeat' alt='repeat'> 
+    `
+    startBtn.removeEventListener('click', playTrain);
+    startBtn.addEventListener('click', ()=>{
+        audio1.play();
+    })
+    let mistake = 0;
+    flipCards.forEach((flipCard)=>{
+        flipCard.addEventListener('click',()=>{
+            if(flipCard.id == lastElem['id']){
+                let win = new Audio(`data/audio/win.wav`);
+                win.play();
+                flipCard.remove();
+                starContainer.appendChild(whiteStar.cloneNode(true))
+                if(n<8){
+                n++;
+                }else{
+                  startBtn.style.display = 'none';  
+                  if(mistake>0){
+                    document.querySelector('.cards-container2').style.display = 'none'
+                    document.getElementById('body').appendChild(loseImage);
+                    let bigLose = new Audio('data/audio/biglose.wav')
+                    bigLose.play();
+                    setTimeout(function(){
+                        location.hash = '#home'
+                       },4000)
+                  }else{
+                    document.querySelector('.cards-container2').style.display = 'none'
+                   document.getElementById('body').appendChild(winImage)}
+                   let bigWin = new Audio('data/audio/bigwin.wav')
+                   bigWin.play();
+                   setTimeout(function(){
+                    location.hash = '#home'
+                   },4000)
+                   console.log(mistake)
+                  return;
+                }
+                lastElem = arr[arr.length-n]; 
+                audio1.src = lastElem['audioSrc'];
+                setTimeout(function(){
+                    audio1.play();
+                }, 2000)
+            }else{
+                let lose = new Audio(`data/audio/lose.wav`);
+                mistake++;
+                lose.play();
+                starContainer.appendChild(redStar.cloneNode(true))
+            }
+        })
     })
 }
 function shuffle(array) {
@@ -259,12 +335,12 @@ toggleButton.addEventListener('click', function(){
         document.querySelector('.text').innerText = "Play"
         document.querySelector('.text').style.color = 'darkred';
         innerCards.forEach((innerCard)=>{
-            innerCard.classList.toggle('playMode');
+            innerCard.classList.add('playMode');
            })
         cardImages.forEach((cardImage)=>{
-            cardImage.classList.toggle('playMode');
+            cardImage.classList.add('playMode');
         })
-        playTrain(a);
+       startButton();
     }else {
         document.querySelector('.text').innerText = "Train";
         document.querySelector('.text').style.color = "darkblue";
@@ -274,5 +350,16 @@ toggleButton.addEventListener('click', function(){
        cardImages.forEach((cardImage)=>{
         cardImage.classList.remove('playMode');
     })
+    startBtn.remove();
+    starContainer.remove();
+    location.reload();
     }
 })
+const startBtn = document.createElement('button');
+    startBtn.classList.add('start-button');
+    startBtn.innerText = 'Start';
+function startButton(){
+    document.querySelector('.cards-container2').insertAdjacentElement('beforebegin', startBtn);
+    document.querySelector('.cards-container2').insertAdjacentElement('beforebegin', starContainer);
+    startBtn.addEventListener('click', playTrain)
+}
